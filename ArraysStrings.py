@@ -1,8 +1,42 @@
+from collections import defaultdict as dd
+
 '''
 1.1 Is Unique: Implement an algorithm to determine if a string has all unique 
 characters. What if you cannot use additional data structures?
 Hints: #44, #7 7 7, #732
 '''
+# TODO: potential bit array solution to come back and try to implement
+# TODO: implement an inplace sorting on strings??
+
+def is_unique(string):
+    # basic way
+    # time: O(c)
+    # space: O(n)
+    # c = the number of chars in the charachter set # e.g. ascii -> c = 256
+    seen = set()
+    for i in string: # O(c)
+        if i in seen: # O(1)
+            return False
+        else:
+            seen.add(i)
+    return True
+
+def is_unique2(string):
+    # Time: O(n)
+    # Space: O(n)
+    noDuplicates = set(string)
+    return len(noDuplicates) == len(string)
+
+def is_unique3(string):
+    # no extra data structures
+    # Time: O(nlogn)
+    # Space: O(1)
+    string = sorted(string) # O(nlogn)
+    for i in range(len(string) - 1): # O(c)
+        if string[i] == string[i+1]:
+            return False
+    return True
+
 
 '''
 1.2 Check Permutation: Given two strings, write a method to decide if one is a 
@@ -10,6 +44,39 @@ permutation of the other.
 Hints: #7, #84, #722, #737
 _pg 193
 '''
+def is_permutation1(str1, str2):
+    # Time: O(nlogn)
+    # Space: O(n)
+
+    if len(str1) != len(str2):
+        return False
+
+    str1 = sorted(str1)
+    str2 = sorted(str2)
+    
+    return str1 == str2
+
+def is_permutation(str1, str2):
+    # Time: O(n)
+    # Space: O(n)
+
+    if len(str1) != len(str2):
+        return False
+
+    chars1 = dd(int)
+    for i in str1:
+        chars1[i] += 1
+    
+    chars2 = dd(int)
+    for i in str2:
+        chars2[i] += 1
+
+    for char in chars1:
+        if chars2[char] != chars1[char]:
+            return False
+    
+    return True
+
 
 '''
 1.3 URLify: Write a method to replace all spaces in a string with '%20'. You may 
@@ -24,6 +91,22 @@ Output: "Mr%20John%20Smith"
 Hints: #53, # 118
 90
 '''
+def urlify(string, length):
+    replacement = "%20"
+    replace = False
+
+    for i in length:
+        if replace and string[i-1] == replacement[0]:
+            string[i] = replacement[1]
+        elif replace and string[i-1] == replacement[1]:
+            string[i] = replacement[2]
+            replace = False
+        
+        if string[i] == ' ':
+            string[i] = replacement[0]
+            replace = True
+    
+    return ''.join(string)
 
 '''
 1.4
